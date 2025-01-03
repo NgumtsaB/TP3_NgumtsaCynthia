@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import artistAPI from "./APIs/Artist.js";
 import userAPI from "./APIs/User.js";
-import ratingAPI from "./APIs/ratings.js";
+import ratingAPI from "./APIs/Ratings.js";
 
 const app = express();
 
