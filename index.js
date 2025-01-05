@@ -2,9 +2,9 @@ import express from "express";
 import cors from "cors";
 import artistAPI from "./APIs/Artist.js";
 import userAPI from "./APIs/User.js";
-
-import followAPI from "./APIs/Follow.js";
 import ratingAPI from "./APIs/Ratings.js";
+import followAPI from "./APIs/Follow.js";
+
 
 const app = express();
 

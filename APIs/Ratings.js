@@ -88,7 +88,21 @@ router.put("/:id", async (req, res) => {
     res.status(500).send({ message: "Error updating rating", error: err.message });
   }
 });
-
+router.get("/", async (req, res) => {
+  try {
+    const ratingSnapshot = await getDocs(Ratings);
+    const ratingList = ratingSnapshot.docs.map((docItem) => ({
+      id: docItem.id,
+      ...docItem.data(),
+    }));
+    res.send(ratingList);
+  } catch (err) {
+    res.status(500).send({
+      message: "Error retrieving ratings",
+      error: err.message,
+    });
+  }
+});
 // Delete a rating
 router.delete("/:id", async (req, res) => {
   try {
