@@ -25,4 +25,5 @@ const db = getFirestore(app);
 const Artist = collection(db, "Artist");
 const Users = collection(db, "Users");
 const Ratings = collection(db, "Ratings");
-export { Artist,Users,Ratings};
+const Follows = collection(db, "Follow");
+export { Artist,Users,Ratings,Follows};

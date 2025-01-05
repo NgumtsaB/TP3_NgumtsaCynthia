@@ -47,7 +47,7 @@ router.post("/", async (req, res) => {
       ratingsCount++;
     });
 
-    const updatedAverage = totalMarks / ratingsCount;
+    const updatedAverage = Math.floor(totalMarks / ratingsCount); // Round down
 
     // Update the artist document with the new average rating
     const artistDocRef = doc(Artist, artistId);
@@ -63,23 +63,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Fetch all ratings
-router.get("/", async (req, res) => {
-  try {
-    const ratingSnapshot = await getDocs(Ratings);
-    const ratingsList = ratingSnapshot.docs.map((ratingDoc) => ({
-      id: ratingDoc.id,
-      ...ratingDoc.data(),
-    }));
-    res.send(ratingsList);
-  } catch (err) {
-    res
-      .status(500)
-      .send({ message: "Failed to retrieve ratings", error: err.message });
-  }
-});
-
-// Retrieve a rating by ID
 router.get("/:id", async (req, res) => {
   try {
     const ratingDocRef = doc(Ratings, req.params.id);

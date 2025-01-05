@@ -9,7 +9,7 @@
     { "src": "/profiles(.*)", "dest": "index.js" },
     { "src": "/artists(.*)", "dest": "index.js" },
     { "src": "/reviews(.*)", "dest": "index.js" },
-   
+    { "src": "/follow(.*)", "dest": "index.js" },
     { "src": "/(.*)", "dest": "index.js" }
   ]
 }

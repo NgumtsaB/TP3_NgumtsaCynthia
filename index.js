@@ -3,6 +3,7 @@ import cors from "cors";
 import artistAPI from "./APIs/Artist.js";
 import userAPI from "./APIs/User.js";
 import ratingAPI from "./APIs/ratings.js";
+import followAPI from "./APIs/Follow.js";
 
 const app = express();
 
@@ -14,6 +15,8 @@ app.use(cors());
 app.use("/artists", artistAPI);
 app.use("/profiles", userAPI);
 app.use("/reviews", ratingAPI);
+app.use("/follow", followAPI)
+
 
 // Root endpoint to welcome users
 app.get("/", (req, res) => {
