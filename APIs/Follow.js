@@ -8,41 +8,55 @@ import {
     doc,
     query,
     where,
+    writeBatch,
+    arrayUnion, arrayRemove 
   } from "firebase/firestore";
 
 const router = express.Router();
 
 
-import { Follows } from "../config.js";  // Import your Firestore or DB models
+import { Follows,db } from "../config.js";  // Import your Firestore or DB models
 
 /**
  * Follow or unfollow an artist
  */
+
 router.post("/", async (req, res) => {
   try {
-    const { userId, artistId, action } = req.body;
+    const data = req.body; // Assume data contains userId and artistId
+    const { userId, artistId } = data;
 
-    if (!userId || !artistId || !['follow', 'unfollow'].includes(action)) {
-      return res.status(400).send({ message: "Invalid request parameters" });
-    }
+    // Check if the user is already following the artist
+    const followQuery = query(
+      Follows,
+      where("userId", "==", userId),
+      where("artistId", "==", artistId)
+    );
+    const existingFollow = await getDocs(followQuery);
 
-    const followDoc = Follows.doc(`${userId}_${artistId}`); // Use a composite key for efficiency
-
-    if (action === 'follow') {
-      await followDoc.set({
-        userId,
-        artistId,
-        createdAt: new Date().toISOString()
+    if (!existingFollow.empty) {
+      // User is already following, so we unfollow by deleting the existing record
+      const batch = writeBatch(db); // Assuming db is your Firestore instance
+      existingFollow.forEach((doc) => {
+        batch.delete(doc.ref);
       });
-      return res.send({ message: "Successfully followed the artist" });
-    } else if (action === 'unfollow') {
-      await followDoc.delete();
-      return res.send({ message: "Successfully unfollowed the artist" });
+      await batch.commit();
+
+      return res.send({ msg: "Unfollowed the artist successfully." });
     }
-  } catch (err) {
-    res.status(500).send({ message: "Error updating follow status", error: err.message });
+
+    // User is not following, so we add a new follow record
+    const response = await addDoc(Follows, { userId, artistId });
+
+    res.send({
+      msg: "Followed the artist successfully.",
+      id: response.id,
+    });
+  } catch (error) {
+    res.status(500).send({ msg: "Failed to toggle follow status", error: error.message });
   }
 });
+
 
 /**
  * Get list of users an artist follows or their followers
